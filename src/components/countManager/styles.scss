@@ -1,0 +1,28 @@
+.count-manager {
+  display: flex;
+  align-items: center;
+  border: 1px solid gray;
+  border-radius: 4px;
+  width: max-content;
+
+  &__decrease,
+  &__increase {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+
+  &__quantity {
+    margin: 0 10px;
+    font-size: 18px;
+  }
+}
