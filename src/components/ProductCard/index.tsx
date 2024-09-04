@@ -11,7 +11,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     addToCart(product);
   };
 
-  const isInCart = cartState.some(
+  const isInCart = cartState.products.some(
     (item) => item.product_id._id === product._id
   );
 

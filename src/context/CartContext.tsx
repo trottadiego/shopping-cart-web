@@ -5,7 +5,7 @@ import {
   updateCartService,
   removeFromCartService,
 } from "../services/cartServices";
-import { CartContextProps, ProductInCart } from "../types/CartTypes";
+import { CartContextProps, CartState, ProductInCart } from "../types/CartTypes";
 import { Product } from "../types/ProductTypes";
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
@@ -13,7 +13,9 @@ const CartContext = createContext<CartContextProps | undefined>(undefined);
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [cartState, setCartState] = React.useState<ProductInCart[]>([]);
+  const [cartState, setCartState] = React.useState<CartState>({
+    products: [],
+  });
   const getCart = useCallback(async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -21,9 +23,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const response = await fetchCartData(token);
       if (response.data) {
-        setCartState(response.data.products);
+        const { products, id_shipping } = response.data;
+        setCartState({ products, id_shipping });
       } else {
-        setCartState([]);
+        setCartState({
+          products: [],
+        });
       }
     } catch (error: any) {
       console.error("Error al obtener el carrito", error.message);
@@ -38,7 +43,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       const response = await addToCartService(token, product._id);
 
       if (response.status === 200) {
-        setCartState(response.data.products);
+        const { products } = response.data;
+
+        setCartState({ products });
       }
     } catch (error) {
       console.error("Error al agregar al carrito", error);
@@ -59,7 +66,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         id_shipping
       );
       if (response.status === 200) {
-        setCartState(response.data.products);
+        const { products, id_shipping } = response.data;
+
+        setCartState({ products, id_shipping });
       }
     } catch (error) {
       console.error("Error al actualizar el carrito", error);
@@ -73,7 +82,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const response = await removeFromCartService(token, productId);
       if (response.status === 200) {
-        setCartState(response.data.products);
+        const { products } = response.data;
+
+        setCartState({ products });
       }
     } catch (error) {
       console.error("Error al eliminar del carrito", error);
@@ -81,7 +92,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const getTotalQuantity = useCallback(() => {
-    return cartState.reduce((total, item) => total + item.quantity, 0);
+    return cartState.products.reduce((total, item) => total + item.quantity, 0);
   }, [cartState]);
 
   return (

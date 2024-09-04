@@ -10,7 +10,8 @@ import "./styles.scss";
 
 const CartList: React.FC = () => {
   const { cartState } = useCart();
-  const totalPrice = cartState.reduce(
+
+  const totalPrice = cartState.products.reduce(
     (acc, item) => acc + item.product_id.price * item.quantity,
     0
   );
@@ -18,7 +19,7 @@ const CartList: React.FC = () => {
   return (
     <div className="cart-list">
       <h1>Carrito de Compras</h1>
-      {cartState.length === 0 ? (
+      {cartState.products.length === 0 ? (
         <EmptyState
           title={"¡Tu carrito está vacío!"}
           text={
@@ -30,7 +31,7 @@ const CartList: React.FC = () => {
       ) : (
         <div>
           <ul>
-            {cartState.map((item) => (
+            {cartState.products.map((item) => (
               <CartItem key={item._id} item={item} />
             ))}
 

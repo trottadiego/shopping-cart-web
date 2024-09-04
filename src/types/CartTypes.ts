@@ -6,9 +6,13 @@ export interface ProductInCart {
   quantity: number;
   id_shipping: string;
 }
+export interface CartState {
+  products: ProductInCart[];
+  id_shipping?: string;
+}
 
 export interface CartContextProps {
-  cartState: ProductInCart[];
+  cartState: CartState;
   addToCart: (product: Product) => void;
   updateCart: (productInCart: ProductInCart, id_shipping?: string) => void;
   removeFromCart: (productId: string) => void;

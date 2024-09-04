@@ -12,7 +12,7 @@ interface ShippingMethod {
 
 const ShippingOptions: React.FC = () => {
   const [shippingMethods, setShippingMethods] = useState<ShippingMethod[]>([]);
-  const [selectedOption, setSelectedOption] = useState<string>("");
+  const [selectedOption, setSelectedOption] = useState<string | undefined>("");
   const { updateCart, cartState } = useCart();
 
   useEffect(() => {
@@ -20,6 +20,7 @@ const ShippingOptions: React.FC = () => {
       try {
         const response = await axios.get("http://localhost:3000/api/shipping");
         setShippingMethods(response.data);
+        setSelectedOption(cartState.id_shipping);
         console.log(cartState);
       } catch (error) {
         console.error("Error fetching shipping methods:", error);
@@ -33,7 +34,7 @@ const ShippingOptions: React.FC = () => {
     const selectedMethodId = event.target.value;
     setSelectedOption(selectedMethodId);
     await updateCart({
-      ...cartState[0],
+      ...cartState.products[0],
       id_shipping: selectedMethodId,
     });
   };
