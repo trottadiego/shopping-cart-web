@@ -1,8 +1,8 @@
 .count-manager {
   display: flex;
   align-items: center;
-  border: 1px solid gray;
-  border-radius: 4px;
+  border: 0.0625rem solid gray;
+  border-radius: 0.25rem;
   width: max-content;
 
   &__decrease,
@@ -10,9 +10,9 @@
     background-color: #007bff;
     border: none;
     color: white;
-    font-size: 20px;
-    width: 30px;
-    height: 30px;
+    font-size: 1.25rem;
+    width: 1.875rem;
+    height: 1.875rem;
     cursor: pointer;
 
     &:disabled {
@@ -22,7 +22,7 @@
   }
 
   &__quantity {
-    margin: 0 10px;
-    font-size: 18px;
+    margin: 0 0.625rem;
+    font-size: 1.125rem;
   }
 }

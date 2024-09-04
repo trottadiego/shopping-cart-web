@@ -3,15 +3,14 @@ import { FaShoppingCart } from "react-icons/fa";
 import { useProducts } from "../context/ProductContext";
 import { useCart } from "../context/CartContext";
 import ProductList from "../components/ProductList";
-import { useNavigate } from "react-router-dom";
+import PageHeader from "../components/PageHeader";
 
 import "../styles/dashboard.scss";
 
 const Dashboard: React.FC = () => {
   const { products, fetchProducts } = useProducts();
-  const { getCart, getTotalQuantity, saveCart } = useCart();
+  const { getCart, getTotalQuantity } = useCart();
   const [totalQuantity, setTotalQuantity] = useState<number>(0);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProducts();
@@ -22,22 +21,20 @@ const Dashboard: React.FC = () => {
     setTotalQuantity(getTotalQuantity());
   }, [getTotalQuantity]);
 
-  const onHandleClick = async () => {
-    await saveCart();
-    navigate("/cart");
-  };
-
   return (
-    <div className="dashboard">
-      <header className="dashboard-header">
-        <h1>Mercado Libre</h1>
-        <button className="cart-button" onClick={onHandleClick}>
-          <FaShoppingCart size={24} />
-          {totalQuantity > 0 && (
-            <span className="cart-quantity">{totalQuantity}</span>
-          )}
-        </button>
-      </header>
+    <div>
+      <PageHeader
+        icon={
+          <div className="cart-icon-container">
+            <FaShoppingCart size={24} />
+            {totalQuantity > 0 && (
+              <span className="cart-quantity">{totalQuantity}</span>
+            )}
+          </div>
+        }
+        path={"/cart"}
+      />
+
       <ProductList products={products} />
     </div>
   );

@@ -1,25 +1,19 @@
 import React from "react";
 import "./styles.scss";
 import { useCart } from "../../context/CartContext";
-
-interface Product {
-  _id: string;
-  name: string;
-  image: string;
-  price: number;
-  stock: number;
-}
-
-interface ProductCardProps {
-  product: Product;
-}
+import { formatCurrency } from "../../utils/utils";
+import { ProductCardProps } from "./types";
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { addToCart } = useCart();
+  const { addToCart, cartState } = useCart();
 
   const handleAddToCart = () => {
     addToCart(product);
   };
+
+  const isInCart = cartState.some(
+    (item) => item.product_id._id === product._id
+  );
 
   return (
     <div className="product-card">
@@ -28,8 +22,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
       <div className="info-section">
         <h3>{product.name}</h3>
-        <p>${product.price}</p>
-        <button onClick={handleAddToCart}>Agregar al carrito</button>
+        <p>{formatCurrency(product.price)}</p>
+        <button
+          onClick={handleAddToCart}
+          disabled={isInCart}
+          className={isInCart ? "in-cart" : ""}
+        >
+          {isInCart ? "En el carrito" : "Agregar al carrito"}
+        </button>
       </div>
     </div>
   );

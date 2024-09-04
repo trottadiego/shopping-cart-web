@@ -1,19 +1,7 @@
 import axios from "axios";
+import { ProductInCart } from "../types/CartTypes";
 
 const API_URL = "http://localhost:3000/api";
-
-interface Product {
-  _id: string;
-  name: string;
-  price: number;
-  image: string;
-}
-
-interface ProductInCart {
-  _id: string;
-  product_id: Product;
-  quantity: number;
-}
 
 export const fetchCartData = async (token: string) => {
   return axios.get(`${API_URL}/cart`, {
@@ -37,23 +25,34 @@ export const addToCartService = async (token: string, productId: string) => {
   );
 };
 
-export const saveCartService = async (
+export const updateCartService = async (
   token: string,
-  products: ProductInCart[]
+  productInCart?: ProductInCart,
+  shippingId?: string
 ) => {
-  try {
-    await axios.post(
-      `${API_URL}/cart/save`,
-      { products },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "x-auth-token": token,
-        },
-      }
-    );
-  } catch (error) {
-    console.error("Error syncing cart:", error);
-    throw error;
-  }
+  return axios.put(
+    `${API_URL}/cart/update`,
+    { ...productInCart, shippingId },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": token,
+      },
+    }
+  );
+};
+
+export const removeFromCartService = async (
+  token: string,
+  productId: string
+) => {
+  return axios.delete(`${API_URL}/cart/remove`, {
+    headers: {
+      "Content-Type": "application/json",
+      "x-auth-token": token,
+    },
+    data: {
+      product_id: productId,
+    },
+  });
 };

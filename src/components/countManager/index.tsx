@@ -1,28 +1,29 @@
 import React from "react";
 import "./styles.scss";
-
-interface CountManagerProps {
-  quantity: number;
-  onIncrease: () => void;
-  onDecrease: () => void;
-}
+import { CountManagerProps } from "./types";
 
 const CountManager: React.FC<CountManagerProps> = ({
   quantity,
   onIncrease,
   onDecrease,
+  min,
+  max,
 }) => {
   return (
     <div className="count-manager">
       <button
         className="count-manager__decrease"
         onClick={onDecrease}
-        disabled={quantity === 1}
+        disabled={quantity === min}
       >
         -
       </button>
       <span className="count-manager__quantity">{quantity}</span>
-      <button className="count-manager__increase" onClick={onIncrease}>
+      <button
+        className="count-manager__increase"
+        onClick={onIncrease}
+        disabled={quantity === max}
+      >
         +
       </button>
     </div>

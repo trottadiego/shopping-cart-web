@@ -1,158 +1,98 @@
-import React, {
-  createContext,
-  useContext,
-  useReducer,
-  useCallback,
-} from "react";
+import React, { createContext, useContext, useCallback } from "react";
 import {
   fetchCartData,
-  // addToCartService,
-  saveCartService,
+  addToCartService,
+  updateCartService,
+  removeFromCartService,
 } from "../services/cartServices";
-
-interface Product {
-  _id: string;
-  name: string;
-  price: number;
-  image: string;
-}
-
-interface ProductInCart {
-  _id: string;
-  product_id: Product;
-  quantity: number;
-}
-
-interface CartState {
-  products: ProductInCart[];
-}
-
-type CartAction =
-  | { type: "ADD_TO_CART"; payload: ProductInCart }
-  | { type: "UPDATE_CART_ITEM"; payload: ProductInCart }
-  | { type: "REMOVE_FROM_CART"; payload: string }
-  | { type: "SET_CART"; payload: ProductInCart[] };
-
-interface CartContextProps {
-  cartState: CartState;
-  addToCart: (product: Product) => void;
-  removeFromCart: (productId: string) => void;
-  getTotalQuantity: () => number;
-  updateCartItem: (productInCart: ProductInCart) => void;
-  getCart: () => void;
-  saveCart: () => Promise<void>;
-}
-
-const cartReducer = (state: CartState, action: CartAction): CartState => {
-  switch (action.type) {
-    case "ADD_TO_CART": {
-      const existingProductIndex = state.products.findIndex(
-        (item) => item.product_id._id === action.payload.product_id._id
-      );
-
-      if (existingProductIndex > -1) {
-        const updatedProducts = state.products.map((item, index) =>
-          index === existingProductIndex
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-        return { products: updatedProducts };
-      } else {
-        return { products: [...state.products, action.payload] };
-      }
-    }
-
-    case "UPDATE_CART_ITEM": {
-      const updatedProducts = state.products.map((item) =>
-        item._id === action.payload._id
-          ? { ...item, quantity: action.payload.quantity }
-          : item
-      );
-      return { products: updatedProducts };
-    }
-
-    case "SET_CART":
-      return { products: action.payload };
-
-    case "REMOVE_FROM_CART": {
-      const updatedProducts = state.products.filter(
-        (item) => item._id !== action.payload
-      );
-      return { products: updatedProducts };
-    }
-
-    default:
-      return state;
-  }
-};
+import { CartContextProps, ProductInCart } from "../types/CartTypes";
+import { Product } from "../types/ProductTypes";
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [cartState, dispatch] = useReducer(cartReducer, { products: [] });
-
-  const addToCart = (product: Product) => {
-    dispatch({
-      type: "ADD_TO_CART",
-      payload: { _id: product._id, product_id: product, quantity: 1 },
-    });
-  };
-
-  const saveCart = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    try {
-      await saveCartService(token, cartState.products);
-    } catch (error) {
-      console.error("Error al guardar el carrito", error);
-    }
-  };
-
+  const [cartState, setCartState] = React.useState<ProductInCart[]>([]);
   const getCart = useCallback(async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
     try {
       const response = await fetchCartData(token);
-      if (response.status === 200) {
-        dispatch({ type: "SET_CART", payload: response.data.products });
+      if (response.data) {
+        setCartState(response.data.products);
+      } else {
+        setCartState([]);
       }
-    } catch (error) {
-      console.error("Error al obtener el carrito", error);
+    } catch (error: any) {
+      console.error("Error al obtener el carrito", error.message);
     }
   }, []);
 
-  const removeFromCart = (productId: string) => {
-    dispatch({
-      type: "REMOVE_FROM_CART",
-      payload: productId,
-    });
+  const addToCart = async (product: Product) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const response = await addToCartService(token, product._id);
+
+      if (response.status === 200) {
+        setCartState(response.data.products);
+      }
+    } catch (error) {
+      console.error("Error al agregar al carrito", error);
+    }
   };
 
-  const updateCartItem = (productInCart: ProductInCart) => {
-    dispatch({
-      type: "UPDATE_CART_ITEM",
-      payload: productInCart,
-    });
+  const updateCart = async (
+    productInCart: ProductInCart,
+    id_shipping?: string
+  ) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const response = await updateCartService(
+        token,
+        productInCart,
+        id_shipping
+      );
+      if (response.status === 200) {
+        setCartState(response.data.products);
+      }
+    } catch (error) {
+      console.error("Error al actualizar el carrito", error);
+    }
+  };
+
+  const removeFromCart = async (productId: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const response = await removeFromCartService(token, productId);
+      if (response.status === 200) {
+        setCartState(response.data.products);
+      }
+    } catch (error) {
+      console.error("Error al eliminar del carrito", error);
+    }
   };
 
   const getTotalQuantity = useCallback(() => {
-    return cartState.products.reduce((total, item) => total + item.quantity, 0);
-  }, [cartState.products]);
+    return cartState.reduce((total, item) => total + item.quantity, 0);
+  }, [cartState]);
 
   return (
     <CartContext.Provider
       value={{
         cartState,
         addToCart,
+        updateCart,
+        removeFromCart,
         getCart,
         getTotalQuantity,
-        updateCartItem,
-        saveCart,
-        removeFromCart,
       }}
     >
       {children}

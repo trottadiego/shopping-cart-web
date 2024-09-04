@@ -1,0 +1,42 @@
+.page-header {
+  position: fixed;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  background-color: #ffe600;
+  border-bottom: 0.0625rem solid #ddd;
+
+  .brand-header {
+    display: flex;
+    align-items: center;
+  }
+  .brand-logo {
+    border-radius: 100%;
+    border: 2px solid #3483fa;
+    background-color: #3483fa;
+  }
+  h1 {
+    padding-left: 0.625rem;
+    font-size: 1.8rem;
+    color: #333;
+    margin: 0;
+  }
+
+  .icon-button {
+    background-color: transparent;
+    border: none;
+    padding-right: 3.125rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    color: #333;
+    transition: color 0.2s ease-in-out;
+
+    &:hover {
+      color: #007bff;
+    }
+  }
+}

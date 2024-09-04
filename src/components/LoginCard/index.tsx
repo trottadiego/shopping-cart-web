@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import "./styles.scss";
-
-interface LoginCardProps {
-  handleSubmit: (user: string, password: string) => void;
-}
+import { LoginCardProps } from "./types";
 
 const LoginCard: React.FC<LoginCardProps> = ({ handleSubmit }) => {
   const [user, setUser] = useState("");

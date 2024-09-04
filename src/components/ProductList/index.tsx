@@ -1,35 +1,19 @@
 import React from "react";
 import ProductCard from "../ProductCard/index";
 import "./styles.scss";
-// import { useCart } from "../../context/CartContext";
-
-interface Product {
-  _id: string;
-  name: string;
-  image: string;
-  price: number;
-  stock: number;
-}
-
-interface ProductListProps {
-  products: Product[];
-}
+import { ProductListProps } from "./types";
 
 const ProductList: React.FC<ProductListProps> = ({ products }) => {
-  // const { addToCart } = useCart();
-
-  // const handleAddToCart = (product: Product) => {
-  //   addToCart(product);
-  // };
-
   return (
     <div className="product-list">
       <ul>
-        {products.map((product) => (
-          <li key={product._id}>
-            <ProductCard product={product} />
-          </li>
-        ))}
+        {products
+          .filter((product) => product.stock > 0)
+          .map((product) => (
+            <li key={product._id}>
+              <ProductCard product={product} />
+            </li>
+          ))}
       </ul>
     </div>
   );

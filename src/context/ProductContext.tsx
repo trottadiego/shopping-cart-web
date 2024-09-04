@@ -1,18 +1,6 @@
 import React, { createContext, useState, useContext } from "react";
 import { fetchProducts as fetchProductsService } from "../services/productServices";
-
-interface Product {
-  _id: string;
-  name: string;
-  image: string;
-  price: number;
-  stock: number;
-}
-
-interface ProductContextType {
-  products: Product[];
-  fetchProducts: () => void;
-}
+import { Product, ProductContextType } from "../types/ProductTypes";
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
