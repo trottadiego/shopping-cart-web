@@ -1,6 +1,7 @@
 export interface ShippingMethod {
   _id: string;
   type: string;
+  description: string;
   price: number;
 }
 

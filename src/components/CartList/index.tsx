@@ -36,6 +36,7 @@ const CartList: React.FC = () => {
     const shipping = shippingMethods.find(
       (sm) => sm._id.toString() === cartState.id_shipping
     );
+
     const total = shipping ? shipping.price + subtotalPrice : subtotalPrice;
     return total;
   };
@@ -58,8 +59,9 @@ const CartList: React.FC = () => {
             {cartState.products.map((item) => (
               <CartItem key={item._id} item={item} />
             ))}
-
-            <ShippingOptions shippingMethods={shippingMethods} />
+            <div className="cart-item">
+              <ShippingOptions shippingMethods={shippingMethods} />
+            </div>
           </ul>
           <div className="summary">
             {totalPrice() !== subtotalPrice && (

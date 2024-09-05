@@ -14,7 +14,7 @@ const LoginCard: React.FC<LoginCardProps> = ({ handleSubmit }) => {
     <div className="login-card">
       <h1>Login</h1>
       <div className="form-group">
-        <label>User</label>
+        <label>Usuario</label>
         <input
           type="text"
           value={user}
@@ -23,7 +23,7 @@ const LoginCard: React.FC<LoginCardProps> = ({ handleSubmit }) => {
         />
       </div>
       <div className="form-group">
-        <label>Password</label>
+        <label>Contraseña</label>
         <input
           type="password"
           value={password}

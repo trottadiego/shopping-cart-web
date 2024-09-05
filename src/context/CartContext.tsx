@@ -7,6 +7,7 @@ import {
 } from "../services/cartServices";
 import { CartContextProps, CartState, ProductInCart } from "../types/CartTypes";
 import { Product } from "../types/ProductTypes";
+import { useNavigate } from "react-router-dom";
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
 
@@ -16,10 +17,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   const [cartState, setCartState] = React.useState<CartState>({
     products: [],
   });
+
+  const navigate = useNavigate();
+
   const getCart = useCallback(async () => {
     const token = localStorage.getItem("token");
-    if (!token) return;
-
+    if (!token) {
+      navigate("/login"); // Redirigir si no hay token
+      return;
+    }
     try {
       const response = await fetchCartData(token);
       if (response.data) {
@@ -32,6 +38,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     } catch (error: any) {
       console.error("Error al obtener el carrito", error.message);
+      if (error.response && error.response.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
     }
   }, []);
 
@@ -82,9 +92,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const response = await removeFromCartService(token, productId);
       if (response.status === 200) {
-        const { products } = response.data;
-
-        setCartState({ products });
+        let { products, id_shipping } = response.data;
+        if (!products) products = [];
+        setCartState({ products, id_shipping });
       }
     } catch (error) {
       console.error("Error al eliminar del carrito", error);

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { FaTag } from "react-icons/fa";
 import { formatCurrency } from "../../utils/utils";
 import { useCart } from "../../context/CartContext";
 import { ShippingOptionsProps } from "./types";
@@ -13,16 +14,11 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
     cartState.id_shipping
   );
 
-  useEffect(() => {
-    setSelectedOption(cartState.id_shipping);
-  }, []);
-
-  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedMethodId = event.target.value;
-    setSelectedOption(selectedMethodId);
-    await updateCart({
+  const handleOptionClick = async (methodId: string) => {
+    setSelectedOption(methodId);
+    updateCart({
       ...cartState.products[0],
-      id_shipping: selectedMethodId,
+      id_shipping: methodId,
     });
   };
 
@@ -31,23 +27,26 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
   };
 
   return (
-    <li className="shipping-options">
+    <div className="shipping-options">
       <h3>Opciones de Envío</h3>
       {shippingMethods.map((method) => (
-        <div key={method._id}>
-          <label className="shipping-option">
-            <input
-              type="radio"
-              name="shippingOption"
-              value={method._id}
-              checked={selectedOption === method._id}
-              onChange={handleChange}
-            />
-            {method.type} {formatPrice(method.price)}
-          </label>
-        </div>
+        <li
+          key={method._id}
+          className={`shipping-option ${
+            selectedOption === method._id ? "selected" : ""
+          }`}
+          onClick={() => handleOptionClick(method._id)}
+        >
+          <div className="shipping-details">
+            <h4 className="shipping-title">{method.type}</h4>
+            <p className="shipping-description">{method.description}</p>
+            <span className="shipping-price">
+              <FaTag /> {formatPrice(method.price)}
+            </span>
+          </div>
+        </li>
       ))}
-    </li>
+    </div>
   );
 };
 
