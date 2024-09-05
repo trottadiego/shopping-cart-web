@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
-import { useProducts } from "../context/ProductContext";
+import { fetchProducts as fetchProductsService } from "../services/productServices";
 import { useCart } from "../context/CartContext";
 import ProductList from "../components/ProductList";
 import PageHeader from "../components/PageHeader";
+import { Product } from "../types/ProductTypes";
 
 import "../styles/dashboard.scss";
 
 const Dashboard: React.FC = () => {
-  const { products, fetchProducts } = useProducts();
   const { getCart, getTotalQuantity } = useCart();
   const [totalQuantity, setTotalQuantity] = useState<number>(0);
+  const [products, setProducts] = useState<Product[]>([]);
+
+  const fetchProducts = async () => {
+    try {
+      const productsData = await fetchProductsService();
+      setProducts(productsData);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
   useEffect(() => {
     fetchProducts();
@@ -34,7 +44,6 @@ const Dashboard: React.FC = () => {
         }
         path={"/cart"}
       />
-
       <ProductList products={products} />
     </div>
   );

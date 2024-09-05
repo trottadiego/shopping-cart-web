@@ -1,33 +1,20 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import "./styles.scss";
 import { formatCurrency } from "../../utils/utils";
 import { useCart } from "../../context/CartContext";
+import { ShippingOptionsProps } from "./types";
+import "./styles.scss";
 
-interface ShippingMethod {
-  _id: string;
-  type: string;
-  price: number;
-}
-
-const ShippingOptions: React.FC = () => {
-  const [shippingMethods, setShippingMethods] = useState<ShippingMethod[]>([]);
-  const [selectedOption, setSelectedOption] = useState<string | undefined>("");
+const ShippingOptions: React.FC<ShippingOptionsProps> = ({
+  shippingMethods,
+}) => {
   const { updateCart, cartState } = useCart();
 
-  useEffect(() => {
-    const fetchShippingMethods = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/api/shipping");
-        setShippingMethods(response.data);
-        setSelectedOption(cartState.id_shipping);
-        console.log(cartState);
-      } catch (error) {
-        console.error("Error fetching shipping methods:", error);
-      }
-    };
+  const [selectedOption, setSelectedOption] = useState<string | undefined>(
+    cartState.id_shipping
+  );
 
-    fetchShippingMethods();
+  useEffect(() => {
+    setSelectedOption(cartState.id_shipping);
   }, []);
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,7 +27,7 @@ const ShippingOptions: React.FC = () => {
   };
 
   const formatPrice = (price: number) => {
-    return price === 0 ? "Gratis" : `$${formatCurrency(price)}`;
+    return price === 0 ? "Gratis" : `${formatCurrency(price)}`;
   };
 
   return (
@@ -56,7 +43,7 @@ const ShippingOptions: React.FC = () => {
               checked={selectedOption === method._id}
               onChange={handleChange}
             />
-            {method.type} - {formatPrice(method.price)}
+            {method.type} {formatPrice(method.price)}
           </label>
         </div>
       ))}

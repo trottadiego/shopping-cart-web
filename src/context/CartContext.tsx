@@ -43,9 +43,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       const response = await addToCartService(token, product._id);
 
       if (response.status === 200) {
-        const { products } = response.data;
+        const { products, id_shipping } = response.data;
 
-        setCartState({ products });
+        setCartState({ products, id_shipping });
       }
     } catch (error) {
       console.error("Error al agregar al carrito", error);
