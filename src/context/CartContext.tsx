@@ -23,11 +23,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   const getCart = useCallback(async () => {
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/login"); // Redirigir si no hay token
+      navigate("/login");
       return;
     }
+
     try {
       const response = await fetchCartData(token);
+
       if (response.data) {
         const { products, id_shipping } = response.data;
         setCartState({ products, id_shipping });
@@ -38,6 +40,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     } catch (error: any) {
       console.error("Error al obtener el carrito", error.message);
+
       if (error.response && error.response.status === 401) {
         localStorage.removeItem("token");
         navigate("/login");

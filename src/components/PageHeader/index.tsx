@@ -1,9 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles.scss";
-import { FaHandsHelping } from "react-icons/fa";
 import { PageHeaderProps } from "./types";
-// import logo from "../../../public/mllogo.webp";
+import logo from "../../../public/codoMeli.png";
 
 const PageHeader: React.FC<PageHeaderProps> = ({ path, icon }) => {
   const navigate = useNavigate();
@@ -17,8 +16,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ path, icon }) => {
       <header className="page-header">
         <div className="brand-header">
           <div className="brand-logo">
-            <FaHandsHelping size={"2rem"} color="white" />
-            {/* <img src={logo} sizes="20px" /> */}
+            <img src={logo} alt="Logo" />
           </div>
           <h1>Mercado Libre</h1>
         </div>

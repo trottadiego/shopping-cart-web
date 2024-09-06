@@ -1,4 +1,4 @@
 export interface PageHeaderProps {
-  path: String;
-  icon: any;
+  path?: String;
+  icon?: any;
 }

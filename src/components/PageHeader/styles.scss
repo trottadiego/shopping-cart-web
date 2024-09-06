@@ -7,16 +7,26 @@
   padding: 1.25rem;
   background-color: #ffe600;
   border-bottom: 0.0625rem solid #ddd;
+  max-height: 2.25rem;
+  z-index: 1000;
 
   .brand-header {
     display: flex;
     align-items: center;
   }
+
   .brand-logo {
-    border-radius: 100%;
-    border: 0.125rem solid #3483fa;
-    background-color: #3483fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
   }
+
+  .brand-logo img {
+    height: 3.75rem;
+    width: auto;
+  }
+
   h1 {
     padding-left: 0.625rem;
     font-size: 1.8rem;

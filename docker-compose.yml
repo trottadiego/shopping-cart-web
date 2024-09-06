@@ -1,14 +1,14 @@
 version: "3"
 services:
   frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     ports:
       - "5173:5173"
     networks:
-      - frontend_network
+      - app-network
+    environment:
+      - VITE_APP_API_URL=http://localhost:3000/api
 
 networks:
-  frontend_network:
-    driver: bridge
+  app-network:
+    external: true
