@@ -1,9 +1,9 @@
-version: "3"
+version: '3'
 services:
   frontend:
     build: .
     ports:
-      - "5173:5173"
+      - '5173:5173'
     networks:
       - app-network
     environment:
@@ -11,4 +11,4 @@ services:
 
 networks:
   app-network:
-    external: true
+    driver: bridge
